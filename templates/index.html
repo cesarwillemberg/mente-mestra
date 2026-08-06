@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mente Mestra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+</head>
+<body>
+
+  <div class="app-shell">
+
+    <!-- Barra lateral com histórico de conversas -->
+    <aside class="sidebar-conversas">
+      <div class="sidebar-header">
+        <h2>Mente Mestra</h2>
+        <button id="btn-nova-conversa" class="btn-nova-conversa" title="Nova conversa">+</button>
+      </div>
+      <div class="sidebar-conversas-container">
+        <p class="rotulo-secao">Histórico</p>
+        <ul id="lista-conversas" class="lista-conversas"></ul>
+      </div>
+    </aside>
+
+    <!-- Área principal do chat -->
+    <div class="chat-container">
+
+      <!-- Cabeçalho com título e botão de configurações -->
+      <header class="chat-header">
+        <div class="header-info">
+          <h1>Mente Mestra</h1>
+          <p>Converse com seu conselho de IAs</p>
+        </div>
+        <button id="btn-configuracoes" class="btn-configuracoes" title="Configurações">⚙️</button>
+      </header>
+
+      <!-- Painel de conversas -->
+      <main id="turnos" class="chat-messages"></main>
+
+      <!-- Painel de configurações (modal/overlay) -->
+      <div id="painel-config" class="painel-config">
+        <div class="config-header">
+          <h3>Configurações</h3>
+          <button id="btn-fechar-config" class="btn-fechar">×</button>
+        </div>
+
+        <div class="config-content">
+          <div class="config-section">
+            <label class="rotulo">Convocar conselheiros</label>
+            <div class="chips" id="chips">
+              {% for chave, c in consultores.items() %}
+              <label class="chip chip-{{ chave }}">
+                <input type="checkbox" value="{{ chave }}" checked>
+                <span>{{ c.nome }}</span>
+                <small>{{ c.empresa }}</small>
+              </label>
+              {% endfor %}
+            </div>
+            <div class="quorum-info">
+              <span id="quorum" class="quorum">4 de 4 conselheiros convocados</span>
+            </div>
+          </div>
+
+          <div class="config-section">
+            <label class="chairman-toggle">
+              <input type="checkbox" id="usar-chairman" checked>
+              <span>Sintetizar em um parecer único</span>
+            </label>
+            <select id="quem-chairman" class="config-select">
+              {% for chave, c in consultores.items() %}
+              <option value="{{ chave }}" {% if chave == 'claude' %}selected{% endif %}>{{ c.nome }} como chairman</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="config-section">
+            <label class="socratica-toggle">
+              <input type="checkbox" id="modo-socratico">
+              <span>Modo Socrático (ensinar a pensar)</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Área de input no rodapé -->
+      <footer class="chat-footer">
+        <div class="input-container">
+          <textarea
+            id="ideia"
+            class="chat-input"
+            placeholder="Escreva sua pergunta ou ideia aqui..."
+            rows="1"
+          ></textarea>
+          <button id="btn-enviar" class="btn-enviar">Enviar</button>
+        </div>
+        <p class="footer-info">Roda localmente. Suas ideias vão direto da sua máquina para a API de cada empresa.</p>
+      </footer>
+
+    </div>
+
+  </div>
+
+  <!-- Overlay do painel de configurações -->
+  <div id="config-overlay" class="config-overlay"></div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
