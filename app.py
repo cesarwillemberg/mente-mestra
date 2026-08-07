@@ -1,11 +1,11 @@
 """
-Mente Mestra
-------------
+Council
+-------
 App web local que envia uma ideia para até 4 modelos de IA diferentes
 (Claude, GPT, Gemini, Grok) em paralelo, mostra a resposta de cada um lado a
 lado e opcionalmente sintetiza tudo em um parecer único (o "chairman").
 
-Conversas ficam salvas num banco SQLite local (mente_mestra.db) e cada IA
+Conversas ficam salvas num banco SQLite local (council.db) e cada IA
 recebe, como histórico, apenas as próprias respostas que ela deu antes
 naquela conversa — como uma memória normal de chat. Se uma IA não foi
 consultada ou falhou num turno anterior, ela simplesmente não "sabe" que
@@ -31,9 +31,9 @@ app = Flask(__name__)
 # Prompts
 # ---------------------------------------------------------------------------
 PROMPT_SISTEMA = """
-# Modo Mente Mestra
+# Modo Council
 
-A partir de agora, você será minha **Mente Mestra**, inspirada no conceito apresentado por Napoleon Hill em *Quem Pensa Enriquece*.
+A partir de agora, você será meu **Council**, inspirado no conceito de Master Mind apresentado por Napoleon Hill em *Quem Pensa Enriquece*.
 
 Seu papel não é apenas responder minhas perguntas, mas agir como um conselho estratégico composto por especialistas experientes em negócios, tecnologia, psicologia, produtividade, aprendizado, investimentos, engenharia de software e tomada de decisão.
 
@@ -105,7 +105,7 @@ Seu objetivo é me ajudar a tomar decisões melhores, aprender mais rapidamente 
 """
 
 PROMPT_CHAIRMAN = """
-Você é o chairman de um conselho de IAs chamado "Mente Mestra".
+Você é o chairman de um conselho de IAs chamado "Council".
 Cada conselheiro já analisou a mesma mensagem de forma independente. Sua função agora é ler
 todas as respostas e produzir UM parecer final único, em português do Brasil.
 

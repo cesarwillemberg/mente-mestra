@@ -1,5 +1,5 @@
 """
-Camada de banco de dados da Mente Mestra.
+Camada de banco de dados do Council.
 
 Guarda conversas e, dentro de cada conversa, os "turnos" (uma mensagem do
 usuário + as respostas individuais dos conselheiros + a síntese do chairman
@@ -13,7 +13,7 @@ import sqlite3
 from contextlib import contextmanager
 from datetime import datetime, timezone
 
-CAMINHO_DB = os.path.join(os.path.dirname(__file__), "mente_mestra.db")
+CAMINHO_DB = os.path.join(os.path.dirname(__file__), "council.db")
 
 
 @contextmanager

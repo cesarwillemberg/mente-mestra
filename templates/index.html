@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mente Mestra</title>
+  <title>Council</title>
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
     <aside class="sidebar-conversas">
       <div class="sidebar-header">
         <h2 id="btn-home" class="marca" title="Voltar para a home">
-          <svg class="icone-quorum" viewBox="0 0 100 100" aria-hidden="true">
+          <!-- <svg class="icone-quorum" viewBox="0 0 100 100" aria-hidden="true">
             <line x1="50" y1="50" x2="50" y2="18" />
             <line x1="50" y1="50" x2="77.7" y2="34" />
             <line x1="50" y1="50" x2="77.7" y2="66" />
@@ -33,27 +33,91 @@
             <circle cx="22.3" cy="66" r="8" />
             <circle cx="22.3" cy="34" r="8" />
             <circle class="centro" cx="50" cy="50" r="16" />
-          </svg>
-          <span>Mente Mestra</span>
+          </svg> -->
+          <span>Council</span>
         </h2>
-        <button id="btn-nova-conversa" class="btn-nova-conversa" title="Nova conversa">+</button>
+        <div class="sidebar-header-acoes">
+          <button id="btn-pesquisar-conversas" class="btn-icone-sidebar" type="button" title="Pesquisar conversas">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+          </button>
+          <button id="btn-fechar-sidebar" class="btn-icone-sidebar" type="button" title="Fechar barra lateral">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" /><line x1="9" y1="3" x2="9" y2="21" /></svg>
+          </button>
+        </div>
+      </div>
+      <div class="sidebar-nova-conversa-wrap">
+        <button id="btn-nova-conversa" class="btn-nova-conversa-full" type="button" title="Nova conversa">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+          <span>Nova conversa</span>
+        </button>
       </div>
       <div class="sidebar-conversas-container">
         <p class="rotulo-secao">Histórico</p>
         <ul id="lista-conversas" class="lista-conversas"></ul>
       </div>
       <div class="sidebar-footer">
-        <button id="btn-configuracoes" class="btn-configuracoes" title="Configurações">⚙️</button>
+        <div class="menu-usuario">
+          <button id="btn-usuario" class="btn-usuario" type="button" aria-haspopup="true" aria-expanded="false">
+            <span class="avatar-usuario">MM</span>
+            <span class="info-usuario">
+              <span class="nome-usuario">Sua conta</span>
+              <span class="email-usuario">{{ usuario_email or "conta local" }}</span>
+            </span>
+            <svg class="seta-usuario" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+
+          <div id="dropdown-usuario" class="dropdown-usuario">
+            <div class="dropdown-usuario-email">{{ usuario_email or "conta local" }}</div>
+            <ul class="dropdown-usuario-lista">
+              <li><button id="btn-configuracoes" class="item-dropdown-usuario" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>
+                <span>Configurações</span>
+              </button></li>
+              <li><button class="item-dropdown-usuario" type="button" data-acao="idioma">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
+                <span>Idioma</span>
+              </button></li>
+              <li><button class="item-dropdown-usuario" type="button" data-acao="ajuda">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
+                <span>Ajuda</span>
+              </button></li>
+              <li class="dropdown-usuario-separador"></li>
+              <li><button class="item-dropdown-usuario" type="button" data-acao="upgrade">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5" /><path d="M5 12l7-7 7 7" /></svg>
+                <span>Fazer upgrade</span>
+              </button></li>
+              <li><button class="item-dropdown-usuario" type="button" data-acao="apps">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /></svg>
+                <span>Apps e extensões</span>
+              </button></li>
+              <li><button class="item-dropdown-usuario" type="button" data-acao="saiba-mais">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
+                <span>Saiba mais</span>
+              </button></li>
+              <li class="dropdown-usuario-separador"></li>
+              <li><button class="item-dropdown-usuario item-sair" type="button" data-acao="sair">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
+                <span>Sair</span>
+              </button></li>
+            </ul>
+          </div>
+        </div>
       </div>
     </aside>
 
     <!-- Área principal do chat -->
     <div class="chat-container vazio">
 
+      <button id="btn-abrir-sidebar" class="btn-icone-sidebar btn-abrir-sidebar" type="button" title="Abrir barra lateral">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" /><line x1="9" y1="3" x2="9" y2="21" /></svg>
+      </button>
+
       <!-- Cabeçalho com título -->
       <header class="chat-header">
         <div class="header-info">
-          <h1 id="chat-titulo">Mente Mestra</h1>
+          <h1 id="chat-titulo">Council</h1>
         </div>
       </header>
 
@@ -74,7 +138,7 @@
           <circle cx="22.3" cy="34" r="8" />
           <circle class="centro" cx="50" cy="50" r="16" />
         </svg>
-        <h1 class="tela-inicial-titulo">Mente Mestra</h1>
+        <h1 class="tela-inicial-titulo">Council</h1>
         <p class="tela-inicial-subtitulo">Converse com seu conselho de IAs</p>
       </div>
 
@@ -157,6 +221,16 @@
 
   <!-- Overlay do painel de configurações -->
   <div id="config-overlay" class="config-overlay"></div>
+
+  <!-- Modal de pesquisa de conversas -->
+  <div id="modal-pesquisa-overlay" class="modal-pesquisa-overlay"></div>
+  <div id="modal-pesquisa" class="modal-pesquisa">
+    <div class="modal-pesquisa-input-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+      <input id="input-pesquisa-conversas" type="text" placeholder="Pesquisar conversas..." autocomplete="off" />
+    </div>
+    <ul id="lista-pesquisa-conversas" class="lista-pesquisa-conversas"></ul>
+  </div>
 
   <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>

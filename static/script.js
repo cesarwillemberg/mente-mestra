@@ -32,7 +32,20 @@ const painelConfig = document.getElementById("painel-config");
 const configOverlay = document.getElementById("config-overlay");
 const btnFecharConfig = document.getElementById("btn-fechar-config");
 
+const btnUsuario = document.getElementById("btn-usuario");
+const dropdownUsuario = document.getElementById("dropdown-usuario");
+
+const appShellEl = document.querySelector(".app-shell");
+const btnFecharSidebar = document.getElementById("btn-fechar-sidebar");
+const btnAbrirSidebar = document.getElementById("btn-abrir-sidebar");
+const btnPesquisarConversas = document.getElementById("btn-pesquisar-conversas");
+const modalPesquisa = document.getElementById("modal-pesquisa");
+const modalPesquisaOverlay = document.getElementById("modal-pesquisa-overlay");
+const inputPesquisaConversas = document.getElementById("input-pesquisa-conversas");
+const listaPesquisaConversasEl = document.getElementById("lista-pesquisa-conversas");
+
 let conversaAtualId = null;
+let conversasCache = [];
 
 // ---------- Gerenciar painel de configurações ----------
 
@@ -46,10 +59,105 @@ function fecharPainelConfig() {
   configOverlay.classList.remove("ativo");
 }
 
-btnConfiguracoes.addEventListener("click", abrirPainelConfig);
+btnConfiguracoes.addEventListener("click", () => {
+  fecharDropdownUsuario();
+  abrirPainelConfig();
+});
 btnResumoConselho.addEventListener("click", abrirPainelConfig);
 btnFecharConfig.addEventListener("click", fecharPainelConfig);
 configOverlay.addEventListener("click", fecharPainelConfig);
+
+// ---------- Gerenciar dropdown de usuário ----------
+
+function abrirDropdownUsuario() {
+  dropdownUsuario.classList.add("ativo");
+  btnUsuario.setAttribute("aria-expanded", "true");
+}
+
+function fecharDropdownUsuario() {
+  dropdownUsuario.classList.remove("ativo");
+  btnUsuario.setAttribute("aria-expanded", "false");
+}
+
+btnUsuario.addEventListener("click", (evento) => {
+  evento.stopPropagation();
+  const aberto = dropdownUsuario.classList.contains("ativo");
+  aberto ? fecharDropdownUsuario() : abrirDropdownUsuario();
+});
+
+document.addEventListener("click", (evento) => {
+  if (!dropdownUsuario.classList.contains("ativo")) return;
+  if (!dropdownUsuario.contains(evento.target) && evento.target !== btnUsuario) {
+    fecharDropdownUsuario();
+  }
+});
+
+document.addEventListener("keydown", (evento) => {
+  if (evento.key === "Escape") {
+    fecharDropdownUsuario();
+    fecharModalPesquisa();
+  }
+});
+
+dropdownUsuario.querySelectorAll("[data-acao]").forEach((item) => {
+  item.addEventListener("click", fecharDropdownUsuario);
+});
+
+// ---------- Colapsar/abrir a barra lateral ----------
+
+btnFecharSidebar.addEventListener("click", () => {
+  appShellEl.classList.add("sidebar-fechada");
+});
+
+btnAbrirSidebar.addEventListener("click", () => {
+  appShellEl.classList.remove("sidebar-fechada");
+});
+
+// ---------- Modal de pesquisa de conversas ----------
+
+function abrirModalPesquisa() {
+  modalPesquisa.classList.add("ativo");
+  modalPesquisaOverlay.classList.add("ativo");
+  renderizarResultadoPesquisa(conversasCache);
+  inputPesquisaConversas.value = "";
+  inputPesquisaConversas.focus();
+}
+
+function fecharModalPesquisa() {
+  modalPesquisa.classList.remove("ativo");
+  modalPesquisaOverlay.classList.remove("ativo");
+}
+
+function renderizarResultadoPesquisa(lista) {
+  listaPesquisaConversasEl.innerHTML = "";
+  if (lista.length === 0) {
+    listaPesquisaConversasEl.innerHTML = `<li class="pesquisa-vazia">Nenhuma conversa encontrada</li>`;
+    return;
+  }
+  lista.forEach((conv) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<button class="abrir-conversa-pesquisa" type="button" data-id="${conv.id}">${escaparTexto(conv.titulo)}</button>`;
+    listaPesquisaConversasEl.appendChild(li);
+  });
+}
+
+btnPesquisarConversas.addEventListener("click", abrirModalPesquisa);
+modalPesquisaOverlay.addEventListener("click", fecharModalPesquisa);
+
+inputPesquisaConversas.addEventListener("input", () => {
+  const termo = inputPesquisaConversas.value.trim().toLowerCase();
+  const filtradas = termo
+    ? conversasCache.filter((conv) => conv.titulo.toLowerCase().includes(termo))
+    : conversasCache;
+  renderizarResultadoPesquisa(filtradas);
+});
+
+listaPesquisaConversasEl.addEventListener("click", (e) => {
+  const abrir = e.target.closest(".abrir-conversa-pesquisa");
+  if (!abrir) return;
+  fecharModalPesquisa();
+  abrirConversa(Number(abrir.dataset.id));
+});
 
 // ---------------------------------------------------------------------------
 // Convocação de conselheiros / chairman (painel de entrada)
@@ -318,6 +426,7 @@ async function carregarConversas() {
   try {
     const resp = await fetch("/conversas");
     const lista = await resp.json();
+    conversasCache = lista;
     renderizarListaConversas(lista);
   } catch (e) {
     listaConversasEl.innerHTML = `<li class="lista-vazia">Não foi possível carregar o histórico.</li>`;

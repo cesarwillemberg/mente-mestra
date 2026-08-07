@@ -1,4 +1,4 @@
-# Mente Mestra
+# Council
 
 App web local: você escreve uma ideia, ela é enviada em paralelo para múltiplas IAs
 (Claude, GPT, Gemini, Grok, Groq, DeepSeek, OpenRouter, Llama Local), cada uma responde
@@ -8,7 +8,7 @@ você pode mandar uma pergunta de acompanhamento e cada IA lembra do que já foi
 
 Roda 100% na sua máquina. As únicas chamadas de rede são as suas, direto para a
 API de cada empresa — nenhum dado passa por um servidor intermediário. O
-histórico das conversas fica salvo num arquivo SQLite local (`mente_mestra.db`).
+histórico das conversas fica salvo num arquivo SQLite local (`council.db`).
 
 ## 1. Instalar as dependências
 
@@ -114,7 +114,7 @@ Coisas que dariam para adicionar depois, quando quiser ir além desta versão:
 mente-mestra/
 ├── app.py              # backend Flask — chama as APIs em paralelo, monta histórico por IA
 ├── db.py                # camada SQLite — conversas e turnos
-├── mente_mestra.db      # criado automaticamente na primeira execução
+├── council.db           # criado automaticamente na primeira execução
 ├── requirements.txt
 ├── .env.example
 ├── templates/

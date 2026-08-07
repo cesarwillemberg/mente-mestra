@@ -97,14 +97,20 @@ html, body {
   fill: var(--claude);
 }
 
-.btn-nova-conversa {
+.sidebar-header-acoes {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
+.btn-icone-sidebar {
   background: transparent;
-  border: 1px solid var(--borda);
-  color: var(--texto);
+  border: none;
+  color: var(--texto-fraco);
   border-radius: 8px;
-  width: 36px;
-  height: 36px;
-  font-size: 1.2rem;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -112,7 +118,58 @@ html, body {
   transition: all 0.15s ease;
 }
 
-.btn-nova-conversa:hover {
+.btn-icone-sidebar svg {
+  width: 18px;
+  height: 18px;
+}
+
+.btn-icone-sidebar:hover {
+  color: var(--texto);
+  background: color-mix(in srgb, var(--texto) 6%, transparent);
+}
+
+.btn-abrir-sidebar {
+  display: none;
+  position: absolute;
+  top: 1.1rem;
+  left: 1.2rem;
+  background: var(--bg);
+  border: 1px solid var(--borda);
+  z-index: 5;
+}
+
+.app-shell.sidebar-fechada .btn-abrir-sidebar {
+  display: flex;
+}
+
+.sidebar-nova-conversa-wrap {
+  padding: 0.7rem 0.7rem 0;
+}
+
+.btn-nova-conversa-full {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--borda);
+  color: var(--texto);
+  border-radius: 8px;
+  padding: 0.55rem 0.7rem;
+  font-family: var(--fonte-corpo);
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  transition: all 0.15s ease;
+}
+
+.btn-nova-conversa-full svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.btn-nova-conversa-full:hover {
   border-color: var(--texto-fraco);
   background: color-mix(in srgb, var(--texto) 6%, transparent);
 }
@@ -126,6 +183,19 @@ html, body {
 .sidebar-footer {
   padding: 0.8rem;
   border-top: 1px solid var(--borda);
+}
+
+/* ---------- sidebar colapsada ---------- */
+
+.sidebar-conversas {
+  transition: width 0.18s ease, opacity 0.18s ease, border-color 0.18s ease;
+}
+
+.app-shell.sidebar-fechada .sidebar-conversas {
+  width: 0;
+  opacity: 0;
+  border-right-color: transparent;
+  pointer-events: none;
 }
 
 .rotulo-secao {
@@ -203,6 +273,7 @@ html, body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
 }
 
 /* ---------- chat header ---------- */
@@ -228,21 +299,160 @@ html, body {
   color: var(--texto-fraco);
 }
 
-.btn-configuracoes {
-  background: transparent;
-  border: 1px solid var(--borda);
-  color: var(--texto);
-  border-radius: 8px;
+/* ---------- menu de usuário (sidebar) ---------- */
+
+.menu-usuario {
+  position: relative;
+}
+
+.btn-usuario {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
   width: 100%;
-  height: 40px;
-  font-size: 1.2rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.4rem 0.5rem;
+  color: var(--texto);
   cursor: pointer;
+  text-align: left;
   transition: all 0.15s ease;
 }
 
-.btn-configuracoes:hover {
-  border-color: var(--texto-fraco);
+.btn-usuario:hover, .btn-usuario[aria-expanded="true"] {
+  border-color: var(--borda);
   background: color-mix(in srgb, var(--texto) 6%, transparent);
+}
+
+.avatar-usuario {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--claude);
+  color: #16140f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--fonte-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.info-usuario {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.nome-usuario {
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.email-usuario {
+  font-size: 0.75rem;
+  color: var(--texto-fraco);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.seta-usuario {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--texto-fraco);
+  transition: transform 0.15s ease;
+}
+
+.btn-usuario[aria-expanded="true"] .seta-usuario {
+  transform: rotate(180deg);
+}
+
+.dropdown-usuario {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 0.5rem);
+  left: 0;
+  width: 260px;
+  background: var(--bg-painel);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.dropdown-usuario.ativo {
+  display: block;
+}
+
+.dropdown-usuario-email {
+  padding: 0.7rem 0.9rem;
+  font-size: 0.78rem;
+  color: var(--texto-fraco);
+  border-bottom: 1px solid var(--borda);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-usuario-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.dropdown-usuario-separador {
+  height: 1px;
+  background: var(--borda);
+  margin: 0.35rem 0.4rem;
+}
+
+.item-dropdown-usuario {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 0.6rem;
+  color: var(--texto);
+  font-size: 0.85rem;
+  font-family: var(--fonte-corpo);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.1s ease;
+}
+
+.item-dropdown-usuario svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--texto-fraco);
+}
+
+.item-dropdown-usuario:hover {
+  background: color-mix(in srgb, var(--texto) 7%, transparent);
+}
+
+.item-sair:hover {
+  color: #e08c7a;
+}
+
+.item-sair:hover svg {
+  color: #e08c7a;
 }
 
 /* ---------- tela inicial (sem conversa aberta) ---------- */
@@ -642,6 +852,106 @@ html, body {
 
 .btn-fechar:hover {
   color: var(--texto-fraco);
+}
+
+/* ---------- modal de pesquisa de conversas ---------- */
+
+.modal-pesquisa-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 199;
+}
+
+.modal-pesquisa-overlay.ativo {
+  display: block;
+}
+
+.modal-pesquisa {
+  display: none;
+  flex-direction: column;
+  position: fixed;
+  top: 12vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(560px, calc(100vw - 2rem));
+  max-height: 70vh;
+  background: var(--bg-painel);
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  z-index: 200;
+  overflow: hidden;
+}
+
+.modal-pesquisa.ativo {
+  display: flex;
+}
+
+.modal-pesquisa-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--borda);
+  flex-shrink: 0;
+}
+
+.modal-pesquisa-input-wrap svg {
+  width: 18px;
+  height: 18px;
+  color: var(--texto-fraco);
+  flex-shrink: 0;
+}
+
+.modal-pesquisa-input-wrap input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--texto);
+  font-family: var(--fonte-corpo);
+  font-size: 0.95rem;
+}
+
+.modal-pesquisa-input-wrap input::placeholder {
+  color: var(--texto-fraco);
+}
+
+.lista-pesquisa-conversas {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem;
+  overflow-y: auto;
+}
+
+.lista-pesquisa-conversas li {
+  display: flex;
+}
+
+.lista-pesquisa-conversas .abrir-conversa-pesquisa {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: var(--texto);
+  padding: 0.6rem 0.7rem;
+  border-radius: 8px;
+  font-family: var(--fonte-corpo);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.lista-pesquisa-conversas .abrir-conversa-pesquisa:hover {
+  background: color-mix(in srgb, var(--texto) 6%, transparent);
+}
+
+.lista-pesquisa-conversas .pesquisa-vazia {
+  padding: 0.7rem;
+  color: var(--texto-fraco);
+  font-size: 0.88rem;
 }
 
 .config-content {
