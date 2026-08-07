@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mente Mestra</title>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -17,7 +18,24 @@
     <!-- Barra lateral com histórico de conversas -->
     <aside class="sidebar-conversas">
       <div class="sidebar-header">
-        <h2 id="btn-home" title="Voltar para a home">Mente Mestra</h2>
+        <h2 id="btn-home" class="marca" title="Voltar para a home">
+          <svg class="icone-quorum" viewBox="0 0 100 100" aria-hidden="true">
+            <line x1="50" y1="50" x2="50" y2="18" />
+            <line x1="50" y1="50" x2="77.7" y2="34" />
+            <line x1="50" y1="50" x2="77.7" y2="66" />
+            <line x1="50" y1="50" x2="50" y2="82" />
+            <line x1="50" y1="50" x2="22.3" y2="66" />
+            <line x1="50" y1="50" x2="22.3" y2="34" />
+            <circle cx="50" cy="18" r="8" />
+            <circle cx="77.7" cy="34" r="8" />
+            <circle cx="77.7" cy="66" r="8" />
+            <circle cx="50" cy="82" r="8" />
+            <circle cx="22.3" cy="66" r="8" />
+            <circle cx="22.3" cy="34" r="8" />
+            <circle class="centro" cx="50" cy="50" r="16" />
+          </svg>
+          <span>Mente Mestra</span>
+        </h2>
         <button id="btn-nova-conversa" class="btn-nova-conversa" title="Nova conversa">+</button>
       </div>
       <div class="sidebar-conversas-container">
@@ -41,7 +59,21 @@
 
       <!-- Tela inicial (sem conversa aberta) -->
       <div class="tela-inicial">
-        <span class="tela-inicial-icone">✳️</span>
+        <svg class="icone-quorum tela-inicial-icone" viewBox="0 0 100 100" aria-hidden="true">
+          <line x1="50" y1="50" x2="50" y2="18" />
+          <line x1="50" y1="50" x2="77.7" y2="34" />
+          <line x1="50" y1="50" x2="77.7" y2="66" />
+          <line x1="50" y1="50" x2="50" y2="82" />
+          <line x1="50" y1="50" x2="22.3" y2="66" />
+          <line x1="50" y1="50" x2="22.3" y2="34" />
+          <circle cx="50" cy="18" r="8" />
+          <circle cx="77.7" cy="34" r="8" />
+          <circle cx="77.7" cy="66" r="8" />
+          <circle cx="50" cy="82" r="8" />
+          <circle cx="22.3" cy="66" r="8" />
+          <circle cx="22.3" cy="34" r="8" />
+          <circle class="centro" cx="50" cy="50" r="16" />
+        </svg>
         <h1 class="tela-inicial-titulo">Mente Mestra</h1>
         <p class="tela-inicial-subtitulo">Converse com seu conselho de IAs</p>
       </div>

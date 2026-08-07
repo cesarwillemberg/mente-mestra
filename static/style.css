@@ -58,8 +58,11 @@ html, body {
   gap: 0.5rem;
 }
 
-.sidebar-header h2 {
+.sidebar-header h2.marca {
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
   font-family: var(--fonte-display);
   font-size: 1.3rem;
   font-weight: 600;
@@ -68,8 +71,30 @@ html, body {
   transition: opacity 0.15s ease;
 }
 
-.sidebar-header h2:hover {
+.sidebar-header h2.marca:hover {
   opacity: 0.8;
+}
+
+.sidebar-header .icone-quorum {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+/* ---------- marca (ícone do quórum) ---------- */
+
+.icone-quorum line {
+  stroke: var(--texto-fraco);
+  stroke-width: 4.5;
+  opacity: 0.55;
+}
+
+.icone-quorum circle {
+  fill: var(--texto-fraco);
+}
+
+.icone-quorum circle.centro {
+  fill: var(--claude);
 }
 
 .btn-nova-conversa {
@@ -232,8 +257,9 @@ html, body {
 }
 
 .tela-inicial-icone {
-  font-size: 1.8rem;
-  margin-bottom: 0.3rem;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 0.5rem;
 }
 
 .tela-inicial-titulo {
