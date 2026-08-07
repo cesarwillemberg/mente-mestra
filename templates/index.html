@@ -52,7 +52,7 @@
         </button>
       </div>
       <nav class="sidebar-nav">
-        <button class="sidebar-nav-item ativo" type="button" data-nav="conversas">
+        <button id="btn-nav-conversas" class="sidebar-nav-item ativo" type="button" data-nav="conversas">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
           <span>Conversas</span>
         </button>
@@ -228,6 +228,41 @@
         </div>
         <p class="footer-info">Roda localmente. Suas ideias vão direto da sua máquina para a API de cada empresa.</p>
       </footer>
+
+      <!-- Tela cheia (restrita à área do chat): todas as conversas -->
+      <div id="tela-chats" class="tela-chats">
+        <div class="tela-chats-conteudo">
+          <div class="tela-chats-topo">
+            <h1>Conversas</h1>
+            <div class="tela-chats-acoes">
+              <div class="tela-chats-pesquisa-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+                <input id="input-tela-chats-pesquisa" type="text" placeholder="Pesquisar conversas..." autocomplete="off" />
+              </div>
+              <div class="tela-chats-filtro-wrap">
+                <button id="btn-tela-chats-filtro" class="btn-filtro-tela-chats" type="button" aria-haspopup="true" aria-expanded="false">
+                  <span>Filtrar por <strong id="rotulo-filtro-tela-chats">Todas</strong></span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6" /></svg>
+                </button>
+                <div id="menu-filtro-tela-chats" class="menu-filtro-tela-chats">
+                  <button type="button" class="item-filtro-chats ativo" data-filtro="todas">Todas <svg class="check-filtro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg></button>
+                  <button type="button" class="item-filtro-chats" data-filtro="compartilhadas">Compartilhadas <svg class="check-filtro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg></button>
+                </div>
+              </div>
+              <button id="btn-selecionar-chats" class="btn-secundario-tela-chats" type="button">Selecionar</button>
+              <button id="btn-tela-chats-nova-conversa" class="btn-primario-tela-chats" type="button">Nova conversa</button>
+            </div>
+          </div>
+
+          <div id="barra-selecao-chats" class="barra-selecao-chats">
+            <span id="contagem-selecao-chats">0 selecionada(s)</span>
+            <button id="btn-excluir-selecionadas" class="btn-excluir-selecao" type="button">Excluir</button>
+            <button id="btn-cancelar-selecao" class="btn-cancelar-selecao" type="button">Cancelar</button>
+          </div>
+
+          <ul id="lista-tela-chats" class="lista-tela-chats"></ul>
+        </div>
+      </div>
 
     </div>
 

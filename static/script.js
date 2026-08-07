@@ -46,9 +46,193 @@ const listaPesquisaConversasEl = document.getElementById("lista-pesquisa-convers
 let conversaAtualId = null;
 let conversasCache = [];
 
+// ---------- Tela cheia: todas as conversas ----------
+
+const btnNavConversas = document.getElementById("btn-nav-conversas");
+const telaChats = document.getElementById("tela-chats");
+const inputTelaChatsPesquisa = document.getElementById("input-tela-chats-pesquisa");
+const listaTelaChatsEl = document.getElementById("lista-tela-chats");
+const filtroWrap = document.querySelector(".tela-chats-filtro-wrap");
+const btnTelaChatsFiltro = document.getElementById("btn-tela-chats-filtro");
+const menuFiltroTelaChats = document.getElementById("menu-filtro-tela-chats");
+const rotuloFiltroTelaChats = document.getElementById("rotulo-filtro-tela-chats");
+const btnSelecionarChats = document.getElementById("btn-selecionar-chats");
+const btnCancelarSelecao = document.getElementById("btn-cancelar-selecao");
+const btnExcluirSelecionadas = document.getElementById("btn-excluir-selecionadas");
+const contagemSelecaoChatsEl = document.getElementById("contagem-selecao-chats");
+const btnTelaChatsNovaConversa = document.getElementById("btn-tela-chats-nova-conversa");
+
+let filtroChatsAtual = "todas";
+let idsSelecionados = new Set();
+
+const MESES_ABREV = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+
+function formatarTempoRelativo(isoStr) {
+  const data = new Date(isoStr);
+  const agora = new Date();
+  const diffMin = Math.floor((agora - data) / 60000);
+
+  if (diffMin < 1) return "agora mesmo";
+  if (diffMin < 60) return `há ${diffMin} min`;
+
+  const diffHoras = Math.floor(diffMin / 60);
+  if (diffHoras < 24) return `há ${diffHoras} hora${diffHoras === 1 ? "" : "s"}`;
+
+  const inicioHoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
+  const inicioData = new Date(data.getFullYear(), data.getMonth(), data.getDate());
+  const diffDias = Math.round((inicioHoje - inicioData) / 86400000);
+
+  if (diffDias === 1) return "ontem";
+  if (diffDias < 7) return `há ${diffDias} dias`;
+
+  const mes = MESES_ABREV[data.getMonth()];
+  return data.getFullYear() === agora.getFullYear()
+    ? `${data.getDate()} ${mes}`
+    : `${data.getDate()} ${mes} ${data.getFullYear()}`;
+}
+
+function sairModoSelecao() {
+  telaChats.classList.remove("modo-selecao");
+  idsSelecionados.clear();
+  atualizarContagemSelecao();
+}
+
+function atualizarContagemSelecao() {
+  contagemSelecaoChatsEl.textContent = `${idsSelecionados.size} selecionada${idsSelecionados.size === 1 ? "" : "s"}`;
+  btnExcluirSelecionadas.disabled = idsSelecionados.size === 0;
+}
+
+function renderizarTelaChats() {
+  const termo = inputTelaChatsPesquisa.value.trim().toLowerCase();
+
+  if (filtroChatsAtual === "compartilhadas") {
+    listaTelaChatsEl.innerHTML = `<li class="tela-chats-vazio">Nenhuma conversa compartilhada ainda.</li>`;
+    return;
+  }
+
+  const lista = termo
+    ? conversasCache.filter((conv) => conv.titulo.toLowerCase().includes(termo))
+    : conversasCache;
+
+  listaTelaChatsEl.innerHTML = "";
+  if (lista.length === 0) {
+    listaTelaChatsEl.innerHTML = `<li class="tela-chats-vazio">Nenhuma conversa encontrada.</li>`;
+    return;
+  }
+
+  lista.forEach((conv) => {
+    const li = document.createElement("li");
+    li.className = "item-tela-chats";
+    li.innerHTML = `
+      <input type="checkbox" class="checkbox-item-chats" data-id="${conv.id}" ${idsSelecionados.has(conv.id) ? "checked" : ""} />
+      <button class="abrir-tela-chat" type="button" data-id="${conv.id}">${escaparTexto(conv.titulo)}</button>
+      <span class="tempo-tela-chat">${formatarTempoRelativo(conv.atualizado_em)}</span>
+    `;
+    listaTelaChatsEl.appendChild(li);
+  });
+}
+
+function abrirTelaChats() {
+  filtroChatsAtual = "todas";
+  rotuloFiltroTelaChats.textContent = "Todas";
+  menuFiltroTelaChats.querySelectorAll(".item-filtro-chats").forEach((item) => {
+    item.classList.toggle("ativo", item.dataset.filtro === "todas");
+  });
+  filtroWrap.classList.remove("aberto");
+  sairModoSelecao();
+  inputTelaChatsPesquisa.value = "";
+  telaChats.classList.add("ativo");
+  renderizarTelaChats();
+}
+
+function fecharTelaChats() {
+  telaChats.classList.remove("ativo");
+  filtroWrap.classList.remove("aberto");
+}
+
+btnNavConversas.addEventListener("click", abrirTelaChats);
+
+inputTelaChatsPesquisa.addEventListener("input", renderizarTelaChats);
+
+btnTelaChatsFiltro.addEventListener("click", (e) => {
+  e.stopPropagation();
+  filtroWrap.classList.toggle("aberto");
+});
+
+document.addEventListener("click", (e) => {
+  if (!filtroWrap.classList.contains("aberto")) return;
+  if (!filtroWrap.contains(e.target)) filtroWrap.classList.remove("aberto");
+});
+
+menuFiltroTelaChats.addEventListener("click", (e) => {
+  const item = e.target.closest(".item-filtro-chats");
+  if (!item) return;
+  filtroChatsAtual = item.dataset.filtro;
+  rotuloFiltroTelaChats.textContent = item.textContent.trim().replace(/✓$/, "").trim();
+  menuFiltroTelaChats.querySelectorAll(".item-filtro-chats").forEach((el) => el.classList.remove("ativo"));
+  item.classList.add("ativo");
+  filtroWrap.classList.remove("aberto");
+  renderizarTelaChats();
+});
+
+btnSelecionarChats.addEventListener("click", () => {
+  telaChats.classList.add("modo-selecao");
+  idsSelecionados.clear();
+  atualizarContagemSelecao();
+  renderizarTelaChats();
+});
+
+btnCancelarSelecao.addEventListener("click", () => {
+  sairModoSelecao();
+  renderizarTelaChats();
+});
+
+btnTelaChatsNovaConversa.addEventListener("click", () => {
+  fecharTelaChats();
+  novaConversa();
+});
+
+listaTelaChatsEl.addEventListener("click", (e) => {
+  const checkbox = e.target.closest(".checkbox-item-chats");
+  if (checkbox) {
+    const id = Number(checkbox.dataset.id);
+    checkbox.checked ? idsSelecionados.add(id) : idsSelecionados.delete(id);
+    atualizarContagemSelecao();
+    return;
+  }
+
+  const abrir = e.target.closest(".abrir-tela-chat");
+  if (!abrir) return;
+  const id = Number(abrir.dataset.id);
+
+  if (telaChats.classList.contains("modo-selecao")) {
+    idsSelecionados.has(id) ? idsSelecionados.delete(id) : idsSelecionados.add(id);
+    atualizarContagemSelecao();
+    renderizarTelaChats();
+    return;
+  }
+
+  fecharTelaChats();
+  abrirConversa(id);
+});
+
+btnExcluirSelecionadas.addEventListener("click", async () => {
+  if (idsSelecionados.size === 0) return;
+  const quantidade = idsSelecionados.size;
+  if (!window.confirm(`Excluir ${quantidade} conversa${quantidade === 1 ? "" : "s"}? Essa ação não pode ser desfeita.`)) return;
+
+  await Promise.all(Array.from(idsSelecionados).map((id) => fetch(`/conversas/${id}`, { method: "DELETE" })));
+
+  if (idsSelecionados.has(conversaAtualId)) novaConversa();
+  sairModoSelecao();
+  await carregarConversas();
+  renderizarTelaChats();
+});
+
 // ---------- Gerenciar painel de configurações ----------
 
 function abrirPainelConfig() {
+  fecharTelaChats();
   painelConfig.classList.add("ativo");
   configOverlay.classList.add("ativo");
 }
@@ -95,6 +279,7 @@ document.addEventListener("keydown", (evento) => {
   if (evento.key === "Escape") {
     fecharDropdownUsuario();
     fecharModalPesquisa();
+    fecharTelaChats();
   }
 });
 
@@ -112,6 +297,7 @@ btnFecharSidebar.addEventListener("click", () => {
 // ---------- Modal de pesquisa de conversas ----------
 
 function abrirModalPesquisa() {
+  fecharTelaChats();
   modalPesquisa.classList.add("ativo");
   modalPesquisaOverlay.classList.add("ativo");
   renderizarResultadoPesquisa(conversasCache);
@@ -455,6 +641,7 @@ function atualizarSidebarAtiva() {
 }
 
 async function abrirConversa(id) {
+  fecharTelaChats();
   const resp = await fetch(`/conversas/${id}`);
   if (!resp.ok) return;
   const conversa = await resp.json();
@@ -477,6 +664,7 @@ async function excluirConversa(id) {
 }
 
 function novaConversa() {
+  fecharTelaChats();
   conversaAtualId = null;
   turnosEl.innerHTML = "";
   atualizarEstadoVazio();

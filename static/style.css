@@ -1190,6 +1190,351 @@ html, body {
   cursor: not-allowed;
 }
 
+/* ---------- tela cheia: todas as conversas ---------- */
+
+.tela-chats {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  z-index: 250;
+  overflow-y: auto;
+}
+
+.tela-chats.ativo {
+  display: block;
+}
+
+.tela-chats-conteudo {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 3rem;
+}
+
+.tela-chats-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.6rem;
+}
+
+.tela-chats-topo h1 {
+  margin: 0;
+  font-family: var(--fonte-display);
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.tela-chats-acoes {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.tela-chats-pesquisa-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-painel);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 0.5rem 0.8rem;
+  transition: border-color 0.15s ease;
+}
+
+.tela-chats-pesquisa-wrap:focus-within {
+  border-color: var(--texto-fraco);
+}
+
+.tela-chats-pesquisa-wrap svg {
+  width: 16px;
+  height: 16px;
+  color: var(--texto-fraco);
+  flex-shrink: 0;
+}
+
+.tela-chats-pesquisa-wrap input {
+  width: 150px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--texto);
+  font-family: var(--fonte-corpo);
+  font-size: 0.85rem;
+}
+
+.tela-chats-pesquisa-wrap input::placeholder {
+  color: var(--texto-fraco);
+}
+
+.tela-chats-filtro-wrap {
+  position: relative;
+}
+
+.btn-filtro-tela-chats {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--bg-painel);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  color: var(--texto-fraco);
+  font-family: var(--fonte-corpo);
+  font-size: 0.85rem;
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-filtro-tela-chats strong {
+  color: var(--texto);
+  font-weight: 600;
+}
+
+.btn-filtro-tela-chats svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.15s ease;
+}
+
+.btn-filtro-tela-chats:hover {
+  border-color: var(--texto-fraco);
+}
+
+.tela-chats-filtro-wrap.aberto .btn-filtro-tela-chats svg {
+  transform: rotate(180deg);
+}
+
+.menu-filtro-tela-chats {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  min-width: 170px;
+  background: var(--bg-painel);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  padding: 0.35rem;
+  z-index: 10;
+}
+
+.tela-chats-filtro-wrap.aberto .menu-filtro-tela-chats {
+  display: block;
+}
+
+.item-filtro-chats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: var(--texto);
+  font-family: var(--fonte-corpo);
+  font-size: 0.85rem;
+  padding: 0.5rem 0.6rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.item-filtro-chats:hover {
+  background: color-mix(in srgb, var(--texto) 7%, transparent);
+}
+
+.item-filtro-chats .check-filtro {
+  width: 14px;
+  height: 14px;
+  color: var(--claude);
+  visibility: hidden;
+}
+
+.item-filtro-chats.ativo .check-filtro {
+  visibility: visible;
+}
+
+.btn-secundario-tela-chats {
+  background: transparent;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  color: var(--texto);
+  font-family: var(--fonte-corpo);
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-secundario-tela-chats:hover {
+  border-color: var(--texto-fraco);
+  background: color-mix(in srgb, var(--texto) 6%, transparent);
+}
+
+.btn-primario-tela-chats {
+  background: var(--texto);
+  border: none;
+  border-radius: 8px;
+  color: var(--bg);
+  font-family: var(--fonte-corpo);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.55rem 1rem;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.btn-primario-tela-chats:hover {
+  opacity: 0.85;
+}
+
+.barra-selecao-chats {
+  display: none;
+  align-items: center;
+  gap: 0.8rem;
+  background: color-mix(in srgb, var(--texto) 6%, transparent);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.tela-chats.modo-selecao .barra-selecao-chats {
+  display: flex;
+}
+
+#contagem-selecao-chats {
+  flex: 1;
+  font-size: 0.85rem;
+  color: var(--texto-fraco);
+}
+
+.btn-excluir-selecao {
+  background: transparent;
+  border: 1px solid color-mix(in srgb, #e08c7a 50%, var(--borda));
+  border-radius: 6px;
+  color: #e08c7a;
+  font-family: var(--fonte-corpo);
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-excluir-selecao:hover:not(:disabled) {
+  background: color-mix(in srgb, #e08c7a 12%, transparent);
+}
+
+.btn-excluir-selecao:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-cancelar-selecao {
+  background: transparent;
+  border: none;
+  color: var(--texto-fraco);
+  font-family: var(--fonte-corpo);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.btn-cancelar-selecao:hover {
+  color: var(--texto);
+}
+
+.lista-tela-chats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.item-tela-chats {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  border-bottom: 1px solid var(--borda);
+  transition: background 0.12s ease;
+}
+
+.item-tela-chats:last-child {
+  border-bottom: none;
+}
+
+.item-tela-chats:hover {
+  background: color-mix(in srgb, var(--texto) 5%, transparent);
+}
+
+.item-tela-chats .checkbox-item-chats {
+  display: none;
+  margin-left: 1rem;
+  cursor: pointer;
+  accent-color: var(--claude);
+}
+
+.tela-chats.modo-selecao .item-tela-chats .checkbox-item-chats {
+  display: block;
+}
+
+.item-tela-chats .abrir-tela-chat {
+  flex: 1;
+  min-width: 0;
+  display: block;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--texto);
+  font-size: 0.92rem;
+  font-weight: 500;
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tela-chats.modo-selecao .item-tela-chats .abrir-tela-chat {
+  padding-left: 0.5rem;
+}
+
+.item-tela-chats .tempo-tela-chat {
+  flex-shrink: 0;
+  color: var(--texto-fraco);
+  font-size: 0.8rem;
+  padding-right: 1.2rem;
+  white-space: nowrap;
+}
+
+.tela-chats-vazio {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--texto-fraco);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .tela-chats-conteudo {
+    padding: 2rem 1rem 2rem;
+  }
+
+  .tela-chats-topo {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tela-chats-pesquisa-wrap input {
+    width: 110px;
+  }
+}
+
 /* ---------- responsivo ---------- */
 
 @media (max-width: 900px) {
