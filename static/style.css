@@ -128,20 +128,6 @@ html, body {
   background: color-mix(in srgb, var(--texto) 6%, transparent);
 }
 
-.btn-abrir-sidebar {
-  display: none;
-  position: absolute;
-  top: 1.1rem;
-  left: 1.2rem;
-  background: var(--bg);
-  border: 1px solid var(--borda);
-  z-index: 5;
-}
-
-.app-shell.sidebar-fechada .btn-abrir-sidebar {
-  display: flex;
-}
-
 .sidebar-nova-conversa-wrap {
   padding: 0.7rem 0.7rem 0;
 }
@@ -149,7 +135,7 @@ html, body {
 .btn-nova-conversa-full {
   width: 100%;
   background: transparent;
-  border: 1px solid var(--borda);
+  border: none;
   color: var(--texto);
   border-radius: 8px;
   padding: 0.55rem 0.7rem;
@@ -170,8 +156,53 @@ html, body {
 }
 
 .btn-nova-conversa-full:hover {
-  border-color: var(--texto-fraco);
   background: color-mix(in srgb, var(--texto) 6%, transparent);
+}
+
+.sidebar-nav {
+  padding: 0.3rem 0.7rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-nav-item {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--texto-fraco);
+  border-radius: 8px;
+  padding: 0.5rem 0.5rem;
+  font-family: var(--fonte-corpo);
+  font-size: 0.92rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: color 0.15s ease, background 0.15s ease;
+  text-align: left;
+}
+
+.sidebar-nav-item svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--texto-fraco);
+}
+
+.sidebar-nav-item:hover:not(:disabled) {
+  color: var(--texto);
+  background: color-mix(in srgb, var(--texto) 6%, transparent);
+}
+
+.sidebar-nav-item.ativo {
+  color: var(--texto);
+  font-weight: 600;
+}
+
+.sidebar-nav-item:disabled {
+  cursor: default;
+  opacity: 0.5;
 }
 
 .sidebar-conversas-container {
@@ -185,17 +216,102 @@ html, body {
   border-top: 1px solid var(--borda);
 }
 
-/* ---------- sidebar colapsada ---------- */
+/* ---------- sidebar colapsada (trilho de ícones) ---------- */
 
 .sidebar-conversas {
-  transition: width 0.18s ease, opacity 0.18s ease, border-color 0.18s ease;
+  transition: width 0.18s ease;
 }
 
 .app-shell.sidebar-fechada .sidebar-conversas {
-  width: 0;
-  opacity: 0;
-  border-right-color: transparent;
-  pointer-events: none;
+  width: 60px;
+  overflow: visible;
+}
+
+.app-shell.sidebar-fechada .sidebar-header {
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0;
+  gap: 0.4rem;
+  border-bottom: none;
+}
+
+.app-shell.sidebar-fechada .sidebar-header h2.marca {
+  display: none;
+}
+
+.app-shell.sidebar-fechada .sidebar-header-acoes {
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.app-shell.sidebar-fechada #btn-pesquisar-conversas {
+  display: none;
+}
+
+.app-shell.sidebar-fechada .sidebar-nova-conversa-wrap {
+  padding: 0.4rem 0 0;
+  display: flex;
+  justify-content: center;
+}
+
+.app-shell.sidebar-fechada .btn-nova-conversa-full {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  justify-content: center;
+}
+
+.app-shell.sidebar-fechada .btn-nova-conversa-full span {
+  display: none;
+}
+
+.app-shell.sidebar-fechada .sidebar-conversas-container {
+  padding: 0;
+}
+
+.app-shell.sidebar-fechada .sidebar-nav {
+  padding: 0.4rem 0 0;
+  align-items: center;
+}
+
+.app-shell.sidebar-fechada .sidebar-nav-item {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  justify-content: center;
+}
+
+.app-shell.sidebar-fechada .sidebar-nav-item span {
+  display: none;
+}
+
+.app-shell.sidebar-fechada .rotulo-secao,
+.app-shell.sidebar-fechada .lista-conversas {
+  display: none;
+}
+
+.app-shell.sidebar-fechada .sidebar-footer {
+  display: flex;
+  justify-content: center;
+  padding: 0.8rem 0;
+}
+
+.app-shell.sidebar-fechada .info-usuario,
+.app-shell.sidebar-fechada .seta-usuario {
+  display: none;
+}
+
+.app-shell.sidebar-fechada .btn-usuario {
+  width: 36px;
+  padding: 0;
+  justify-content: center;
+  border: none;
+}
+
+.app-shell.sidebar-fechada .dropdown-usuario {
+  left: calc(100% + 0.6rem);
+  bottom: 0;
 }
 
 .rotulo-secao {

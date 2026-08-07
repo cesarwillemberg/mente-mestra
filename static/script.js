@@ -37,7 +37,6 @@ const dropdownUsuario = document.getElementById("dropdown-usuario");
 
 const appShellEl = document.querySelector(".app-shell");
 const btnFecharSidebar = document.getElementById("btn-fechar-sidebar");
-const btnAbrirSidebar = document.getElementById("btn-abrir-sidebar");
 const btnPesquisarConversas = document.getElementById("btn-pesquisar-conversas");
 const modalPesquisa = document.getElementById("modal-pesquisa");
 const modalPesquisaOverlay = document.getElementById("modal-pesquisa-overlay");
@@ -106,11 +105,8 @@ dropdownUsuario.querySelectorAll("[data-acao]").forEach((item) => {
 // ---------- Colapsar/abrir a barra lateral ----------
 
 btnFecharSidebar.addEventListener("click", () => {
-  appShellEl.classList.add("sidebar-fechada");
-});
-
-btnAbrirSidebar.addEventListener("click", () => {
-  appShellEl.classList.remove("sidebar-fechada");
+  const fechada = appShellEl.classList.toggle("sidebar-fechada");
+  btnFecharSidebar.title = fechada ? "Abrir barra lateral" : "Fechar barra lateral";
 });
 
 // ---------- Modal de pesquisa de conversas ----------
