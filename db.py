@@ -73,6 +73,17 @@ def criar_conversa(primeira_mensagem: str) -> int:
         return cursor.lastrowid
 
 
+def atualizar_titulo(conversa_id: int, titulo: str) -> None:
+    with conectar() as conn:
+        conn.execute("UPDATE conversas SET titulo = ? WHERE id = ?", (titulo, conversa_id))
+
+
+def obter_titulo(conversa_id: int) -> str | None:
+    with conectar() as conn:
+        linha = conn.execute("SELECT titulo FROM conversas WHERE id = ?", (conversa_id,)).fetchone()
+        return linha["titulo"] if linha else None
+
+
 def listar_conversas() -> list[dict]:
     with conectar() as conn:
         linhas = conn.execute(

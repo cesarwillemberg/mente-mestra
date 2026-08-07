@@ -14,13 +14,20 @@ const quorumEl = document.getElementById("quorum");
 const botaoEnviar = document.getElementById("btn-enviar");
 const ideiaEl = document.getElementById("ideia");
 const turnosEl = document.getElementById("turnos");
+const chatContainerEl = document.querySelector(".chat-container");
 const usarChairmanEl = document.getElementById("usar-chairman");
 const quemChairmanEl = document.getElementById("quem-chairman");
 const listaConversasEl = document.getElementById("lista-conversas");
 const botaoNovaConversa = document.getElementById("btn-nova-conversa");
 const modoSocraticoEl = document.getElementById("modo-socratico");
+const tituloHeaderEl = document.getElementById("chat-titulo");
+const btnHome = document.getElementById("btn-home");
+
+const TITULO_PADRAO = tituloHeaderEl.textContent;
 
 const btnConfiguracoes = document.getElementById("btn-configuracoes");
+const btnResumoConselho = document.getElementById("btn-resumo-conselho");
+const resumoConselhoEl = document.getElementById("resumo-conselho");
 const painelConfig = document.getElementById("painel-config");
 const configOverlay = document.getElementById("config-overlay");
 const btnFecharConfig = document.getElementById("btn-fechar-config");
@@ -40,6 +47,7 @@ function fecharPainelConfig() {
 }
 
 btnConfiguracoes.addEventListener("click", abrirPainelConfig);
+btnResumoConselho.addEventListener("click", abrirPainelConfig);
 btnFecharConfig.addEventListener("click", fecharPainelConfig);
 configOverlay.addEventListener("click", fecharPainelConfig);
 
@@ -55,6 +63,7 @@ function atualizarQuorum() {
   const total = checkboxesMarcados().length;
   const marcados = checkboxesMarcados().filter((c) => c.checked).length;
   quorumEl.textContent = `${marcados} de ${total} conselheiros convocados`;
+  resumoConselhoEl.textContent = `${marcados} conselheiro${marcados === 1 ? "" : "s"}`;
 }
 
 chipsContainer.addEventListener("change", atualizarQuorum);
@@ -198,7 +207,7 @@ function criarCabecalhoUsuario(mensagem) {
   div.className = "turno-usuario";
   const p = document.createElement("p");
   p.textContent = mensagem;
-  div.innerHTML = `<span class="turno-rotulo">Você perguntou</span>`;
+  // div.innerHTML = `<span class="turno-rotulo">Você perguntou</span>`;
   div.appendChild(p);
   return div;
 }
@@ -289,6 +298,19 @@ function criarTurnoPendente(mensagem, modelos, chairman) {
 }
 
 // ---------------------------------------------------------------------------
+// Cabeçalho: mostra o título da conversa aberta (ou o texto padrão da marca
+// quando não há conversa aberta)
+// ---------------------------------------------------------------------------
+
+function atualizarCabecalho(titulo) {
+  tituloHeaderEl.textContent = titulo || TITULO_PADRAO;
+}
+
+function atualizarEstadoVazio() {
+  chatContainerEl.classList.toggle("vazio", turnosEl.children.length === 0);
+}
+
+// ---------------------------------------------------------------------------
 // Barra lateral: lista de conversas
 // ---------------------------------------------------------------------------
 
@@ -334,7 +356,9 @@ async function abrirConversa(id) {
   conversaAtualId = id;
   turnosEl.innerHTML = "";
   conversa.turnos.forEach((turno) => turnosEl.appendChild(renderizarTurnoCompleto(turno)));
+  atualizarEstadoVazio();
   atualizarSidebarAtiva();
+  atualizarCabecalho(conversa.titulo);
   ideiaEl.value = "";
   ideiaEl.focus();
   turnosEl.scrollTop = turnosEl.scrollHeight;
@@ -350,12 +374,15 @@ async function excluirConversa(id) {
 function novaConversa() {
   conversaAtualId = null;
   turnosEl.innerHTML = "";
+  atualizarEstadoVazio();
   atualizarSidebarAtiva();
+  atualizarCabecalho(null);
   ideiaEl.value = "";
   ideiaEl.focus();
 }
 
 botaoNovaConversa.addEventListener("click", novaConversa);
+btnHome.addEventListener("click", novaConversa);
 
 listaConversasEl.addEventListener("click", (e) => {
   const abrir = e.target.closest(".abrir-conversa");
@@ -388,11 +415,11 @@ async function enviar() {
   const chairman = usarChairmanEl.checked ? quemChairmanEl.value : null;
 
   botaoEnviar.disabled = true;
-  botaoEnviar.textContent = "Consultando...";
   fecharPainelConfig();
 
   const { bloco, cardsIndividuais, cardChairman } = criarTurnoPendente(mensagem, modelos, chairman);
   turnosEl.appendChild(bloco);
+  atualizarEstadoVazio();
   ideiaEl.value = "";
   ideiaEl.style.height = "auto";
   turnosEl.scrollTop = turnosEl.scrollHeight;
@@ -419,6 +446,7 @@ async function enviar() {
         if (cardsIndividuais[chave]) preencherCard(cardsIndividuais[chave], resultado);
       });
       if (dados.chairman && cardChairman) preencherCardChairman(cardChairman, dados.chairman.resultado);
+      atualizarCabecalho(dados.titulo);
       await carregarConversas();
       atualizarSidebarAtiva();
       turnosEl.scrollTop = turnosEl.scrollHeight;
@@ -427,7 +455,6 @@ async function enviar() {
     bloco.innerHTML = `<div class="card"><div class="card-erro">Não foi possível falar com o servidor local: ${e.message}</div></div>`;
   } finally {
     botaoEnviar.disabled = false;
-    botaoEnviar.textContent = "Enviar";
   }
 }
 

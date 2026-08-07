@@ -14,6 +14,7 @@ assistente corretamente pra API de cada empresa).
 """
 
 import os
+import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from dotenv import load_dotenv
@@ -396,6 +397,40 @@ Se você entendeu e aceita essas regras, responda **apenas** com a seguinte fras
 """
 
 
+PROMPT_TITULO = """
+Você recebe a primeira mensagem de uma conversa. Gere um título curto (no máximo 6 palavras),
+em português do Brasil, que resuma o assunto real da mensagem — nada genérico como "Nova conversa".
+Não use aspas, ponto final, nem markdown. Responda APENAS com o título.
+"""
+
+
+def _escolher_modelo_para_titulo(modelos_validos: list, chairman: str | None) -> str:
+    if chairman and chairman in modelos_validos:
+        return chairman
+    return modelos_validos[0]
+
+
+_TAG_PENSAMENTO_RE = re.compile(r"<think>.*?</think>", re.IGNORECASE | re.DOTALL)
+
+
+def _remover_pensamento(texto: str) -> str:
+    """Alguns modelos (ex: Qwen/DeepSeek via Groq) incluem o raciocínio em
+    <think>...</think> junto da resposta. Remove isso antes de usar o texto
+    pra qualquer coisa — card individual, chairman ou título — e se a tag
+    ficou aberta (raciocínio truncado, sem resposta final), corta ali mesmo
+    em vez de deixar o raciocínio como se fosse a resposta."""
+    texto = _TAG_PENSAMENTO_RE.sub("", texto)
+    indice_tag_aberta = texto.lower().find("<think>")
+    if indice_tag_aberta != -1:
+        texto = texto[:indice_tag_aberta]
+    return texto.strip()
+
+
+def _limpar_titulo(texto: str) -> str | None:
+    texto = " ".join(_remover_pensamento(texto).split()).strip("\"'.")
+    return texto[:80] or None
+
+
 def _texto_usuario(mensagem: str) -> str:
     return f"Minha ideia/projeto:\n\n{mensagem}"
 
@@ -453,7 +488,7 @@ def _chamar_openai_compatible(mensagens: list, prompt_sistema: str, base_url: st
             model=modelo,
             messages=[{"role": "system", "content": prompt_sistema}, *mensagens],
         )
-        texto = resposta.choices[0].message.content
+        texto = _remover_pensamento(resposta.choices[0].message.content)
         return {"ok": True, "texto": texto}
     except Exception as e:
         return {"ok": False, "erro": str(e)}
@@ -620,17 +655,31 @@ def consultar():
     prompt_sistema = PROMPT_PENSAMENTO_SOCRATICO if modo_socratico else PROMPT_SISTEMA
 
     # 1. Consulta os conselheiros selecionados, em paralelo — cada um recebe
-    #    só o próprio histórico de respostas anteriores nessa conversa.
+    #    só o próprio histórico de respostas anteriores nessa conversa. Se for
+    #    uma conversa nova, aproveita o mesmo pool pra já gerar um título com IA.
+    conversa_e_nova = not conversa_id
     resultados = {}
-    with ThreadPoolExecutor(max_workers=len(modelos_validos)) as executor:
+    futuro_titulo = None
+    with ThreadPoolExecutor(max_workers=len(modelos_validos) + (1 if conversa_e_nova else 0)) as executor:
         futuros = {}
         for m in modelos_validos:
             historico = _historico_para_modelo(turnos_anteriores, m)
             mensagens = [*historico, {"role": "user", "content": _texto_usuario(mensagem)}]
             futuros[executor.submit(CONSULTORES[m]["funcao"], mensagens, prompt_sistema)] = m
+        if conversa_e_nova:
+            modelo_titulo = _escolher_modelo_para_titulo(modelos_validos, chairman)
+            futuro_titulo = executor.submit(
+                CONSULTORES[modelo_titulo]["funcao"], [{"role": "user", "content": mensagem}], PROMPT_TITULO
+            )
         for futuro in as_completed(futuros):
             chave = futuros[futuro]
             resultados[chave] = futuro.result()
+
+    titulo_ia = None
+    if futuro_titulo is not None:
+        resultado_titulo = futuro_titulo.result()
+        if resultado_titulo.get("ok"):
+            titulo_ia = _limpar_titulo(resultado_titulo["texto"])
 
     # 2. Se um chairman foi pedido, manda as respostas que deram certo pra ele sintetizar.
     chairman_resultado = None
@@ -648,13 +697,17 @@ def consultar():
             resultado = CONSULTORES[chairman]["funcao"](mensagens_chairman, PROMPT_CHAIRMAN)
             chairman_resultado = {"quem": chairman, "resultado": resultado}
 
-    # 3. Salva o turno (cria a conversa primeiro, se for nova).
-    if not conversa_id:
+    # 3. Salva o turno (cria a conversa primeiro, se for nova, com o título
+    #    gerado por IA quando disponível — senão fica o título truncado padrão).
+    if conversa_e_nova:
         conversa_id = db.criar_conversa(mensagem)
+        if titulo_ia:
+            db.atualizar_titulo(conversa_id, titulo_ia)
     db.adicionar_turno(conversa_id, mensagem, resultados, chairman_resultado)
 
     return jsonify({
         "conversa_id": conversa_id,
+        "titulo": db.obter_titulo(conversa_id),
         "individuais": resultados,
         "chairman": chairman_resultado,
     })

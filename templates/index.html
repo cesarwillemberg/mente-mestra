@@ -17,26 +17,34 @@
     <!-- Barra lateral com histórico de conversas -->
     <aside class="sidebar-conversas">
       <div class="sidebar-header">
-        <h2>Mente Mestra</h2>
+        <h2 id="btn-home" title="Voltar para a home">Mente Mestra</h2>
         <button id="btn-nova-conversa" class="btn-nova-conversa" title="Nova conversa">+</button>
       </div>
       <div class="sidebar-conversas-container">
         <p class="rotulo-secao">Histórico</p>
         <ul id="lista-conversas" class="lista-conversas"></ul>
       </div>
+      <div class="sidebar-footer">
+        <button id="btn-configuracoes" class="btn-configuracoes" title="Configurações">⚙️</button>
+      </div>
     </aside>
 
     <!-- Área principal do chat -->
-    <div class="chat-container">
+    <div class="chat-container vazio">
 
-      <!-- Cabeçalho com título e botão de configurações -->
+      <!-- Cabeçalho com título -->
       <header class="chat-header">
         <div class="header-info">
-          <h1>Mente Mestra</h1>
-          <p>Converse com seu conselho de IAs</p>
+          <h1 id="chat-titulo">Mente Mestra</h1>
         </div>
-        <button id="btn-configuracoes" class="btn-configuracoes" title="Configurações">⚙️</button>
       </header>
+
+      <!-- Tela inicial (sem conversa aberta) -->
+      <div class="tela-inicial">
+        <span class="tela-inicial-icone">✳️</span>
+        <h1 class="tela-inicial-titulo">Mente Mestra</h1>
+        <p class="tela-inicial-subtitulo">Converse com seu conselho de IAs</p>
+      </div>
 
       <!-- Painel de conversas -->
       <main id="turnos" class="chat-messages"></main>
@@ -88,14 +96,20 @@
 
       <!-- Área de input no rodapé -->
       <footer class="chat-footer">
-        <div class="input-container">
+        <div class="input-card">
           <textarea
             id="ideia"
             class="chat-input"
             placeholder="Escreva sua pergunta ou ideia aqui..."
             rows="1"
           ></textarea>
-          <button id="btn-enviar" class="btn-enviar">Enviar</button>
+          <div class="input-toolbar">
+            <button id="btn-resumo-conselho" class="chip-toolbar" type="button" title="Configurar conselheiros">
+              <span id="resumo-conselho">Conselheiros</span>
+              <span class="chip-toolbar-seta">▾</span>
+            </button>
+            <button id="btn-enviar" class="btn-enviar" title="Enviar" aria-label="Enviar">↑</button>
+          </div>
         </div>
         <p class="footer-info">Roda localmente. Suas ideias vão direto da sua máquina para a API de cada empresa.</p>
       </footer>
